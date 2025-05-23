@@ -1,15 +1,63 @@
-# API Vitivinicultura Embrapa
+# README para o Backend
 
-API para consulta de dados públicos de produção vitivinícola disponibilizados pela Embrapa.
+## Backend - API Embrapa
 
-## 📋 Requisitos
+Esta pasta contém a API backend que fornece acesso aos dados de produção vitivinícola.
 
-- Python 3.8+
-- Dependências listadas em `requirements.txt`
+### Tecnologias Utilizadas
 
-## 🚀 Instalação
+- Node.js
+- Express.js
+- Banco de dados (especificar qual banco está sendo usado)
 
-1. Clone o repositório:
+### Estrutura de Arquivos
+
+```
+backend/
+├── src/                  # Código-fonte da API
+│   ├── controllers/      # Controladores da API
+│   ├── models/           # Modelos de dados
+│   ├── routes/           # Definição de rotas
+│   └── index.js          # Ponto de entrada da aplicação
+├── tests/                # Testes automatizados
+├── .env                  # Variáveis de ambiente (não versionado)
+└── package.json          # Dependências e scripts
+```
+
+### Instalação
+
 ```bash
-git clone [url-do-repositorio]
-cd api-vitivinicultura
+# Instalar dependências
+npm install
+
+# Executar em modo de desenvolvimento
+npm run dev
+
+# Executar testes
+npm test
+
+# Iniciar em modo de produção
+npm start
+```
+
+### Variáveis de Ambiente
+
+Crie um arquivo `.env` na raiz do diretório backend com as seguintes variáveis:
+
+```
+PORT=5000
+DB_CONNECTION_STRING=sua_string_de_conexao
+```
+
+### Endpoints da API
+
+- `GET /api/producao?ano=XXXX`: Retorna dados de produção para o ano especificado
+- (Adicionar outros endpoints conforme necessário)
+
+### Autenticação
+
+(Descrever o método de autenticação, se aplicável)
+
+### Logs e Monitoramento
+
+(Descrever como os logs são gerenciados e como monitorar a API)
