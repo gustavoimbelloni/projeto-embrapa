@@ -1,0 +1,50 @@
+version: "3.8"
+
+services:
+  api:
+    build:
+      context: ./embrapa-api
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./embrapa-api:/app
+      - ./backup:/app/backup  # ✅ necessário se você acessa arquivos CSV no código
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=vitivinicultura
+      - FLASK_APP=main.py
+      - FLASK_ENV=development
+      - REDIS_HOST=embrapa-cache  # ✅ adicionando Redis
+      - REDIS_PORT=6379
+    depends_on:
+      - embrapa-db
+      - embrapa-cache
+
+  embrapa-db:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: vitivinicultura
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./db-init:/docker-entrypoint-initdb.d  # adiciona esse mapeamento
+    ports:
+      - "5432:5432"
+
+  embrapa-cache:
+    image: redis:alpine  # ✅ necessário para o cache Redis
+    ports:
+      - "6379:6379"
+
+  frontend:
+    build:
+      context: ./minha-aplicacao
+    ports:
+      - "3001:3000"
+    depends_on:
+      - api
+
+volumes:
+  pgdata:

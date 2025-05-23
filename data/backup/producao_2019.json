@@ -1,0 +1,218 @@
+{
+  "ano": 2019,
+  "dados": [
+    {
+      "produto": "VINHO DE MESA",
+      "quantidade": 144629737,
+      "subprodutos": [
+        {
+          "produto": "Tinto",
+          "quantidade": 121045115
+        },
+        {
+          "produto": "Branco",
+          "quantidade": 22032828
+        },
+        {
+          "produto": "Rosado",
+          "quantidade": 1551794
+        }
+      ]
+    },
+    {
+      "produto": "VINHO FINO DE MESA (VINIFERA)",
+      "quantidade": 37615422,
+      "subprodutos": [
+        {
+          "produto": "Tinto",
+          "quantidade": 17389377
+        },
+        {
+          "produto": "Branco",
+          "quantidade": 18193055
+        },
+        {
+          "produto": "Rosado",
+          "quantidade": 2032990
+        }
+      ]
+    },
+    {
+      "produto": "SUCO",
+      "quantidade": 77805352,
+      "subprodutos": [
+        {
+          "produto": "Suco de uva integral",
+          "quantidade": 50239767
+        },
+        {
+          "produto": "Suco de uva concentrado",
+          "quantidade": 26861009
+        },
+        {
+          "produto": "Suco de uva adoçado",
+          "quantidade": 120320
+        },
+        {
+          "produto": "Suco de uva orgânico",
+          "quantidade": null
+        },
+        {
+          "produto": "Suco de uva reconstituído",
+          "quantidade": 584256
+        }
+      ]
+    },
+    {
+      "produto": "DERIVADOS",
+      "quantidade": 142888747,
+      "subprodutos": [
+        {
+          "produto": "Espumante",
+          "quantidade": 52176
+        },
+        {
+          "produto": "Espumante moscatel",
+          "quantidade": 515800
+        },
+        {
+          "produto": "Base espumante",
+          "quantidade": null
+        },
+        {
+          "produto": "Base espumante moscatel",
+          "quantidade": 1962443
+        },
+        {
+          "produto": "Base Champenoise champanha",
+          "quantidade": 274903
+        },
+        {
+          "produto": "Base Charmat champanha",
+          "quantidade": 1188095
+        },
+        {
+          "produto": "Bebida de uva",
+          "quantidade": null
+        },
+        {
+          "produto": "Polpa de uva",
+          "quantidade": 1480269
+        },
+        {
+          "produto": "Mosto simples",
+          "quantidade": 135614344
+        },
+        {
+          "produto": "Mosto concentrado",
+          "quantidade": null
+        },
+        {
+          "produto": "Mosto de uva com bagaço",
+          "quantidade": 645816
+        },
+        {
+          "produto": "Mosto dessulfitado",
+          "quantidade": 1000
+        },
+        {
+          "produto": "Mistelas",
+          "quantidade": 3000
+        },
+        {
+          "produto": "Néctar de uva",
+          "quantidade": 32519
+        },
+        {
+          "produto": "Licorosos",
+          "quantidade": null
+        },
+        {
+          "produto": "Compostos",
+          "quantidade": null
+        },
+        {
+          "produto": "Jeropiga",
+          "quantidade": null
+        },
+        {
+          "produto": "Filtrado",
+          "quantidade": null
+        },
+        {
+          "produto": "Frisante",
+          "quantidade": null
+        },
+        {
+          "produto": "Vinho leve",
+          "quantidade": null
+        },
+        {
+          "produto": "Vinho licoroso",
+          "quantidade": 99485
+        },
+        {
+          "produto": "Brandy",
+          "quantidade": null
+        },
+        {
+          "produto": "Destilado",
+          "quantidade": null
+        },
+        {
+          "produto": "Bagaceira",
+          "quantidade": 10495
+        },
+        {
+          "produto": "Licor de bagaceira",
+          "quantidade": 1507
+        },
+        {
+          "produto": "Vinagre",
+          "quantidade": 76096
+        },
+        {
+          "produto": "Borra líquida",
+          "quantidade": 901431
+        },
+        {
+          "produto": "Borra seca",
+          "quantidade": 25996
+        },
+        {
+          "produto": "Vinho Composto",
+          "quantidade": null
+        },
+        {
+          "produto": "Pisco",
+          "quantidade": 3372
+        },
+        {
+          "produto": "Vinho orgânico",
+          "quantidade": null
+        },
+        {
+          "produto": "Espumante orgânico",
+          "quantidade": null
+        },
+        {
+          "produto": "Destilado alcoólico simples de bagaceira",
+          "quantidade": null
+        },
+        {
+          "produto": "Vinho acidificado",
+          "quantidade": null
+        },
+        {
+          "produto": "Mosto parcialmente fermentado",
+          "quantidade": null
+        },
+        {
+          "produto": "Outros derivados",
+          "quantidade": null
+        }
+      ]
+    }
+  ],
+  "total": 402939258
+}

@@ -1,0 +1,170 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "API Vitivinicultura Embrapa",
+    "description": "API para consulta de dados de produção vitivinícola da Embrapa",
+    "version": "1.0.0",
+    "contact": {
+      "email": "seu-email@dominio.com"
+    },
+    "license": {
+      "name": "MIT"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:5000",
+      "description": "Servidor local de desenvolvimento"
+    }
+  ],
+  "paths": {
+    "/api/producao": {
+      "get": {
+        "tags": ["Produção"],
+        "summary": "Consulta dados de produção",
+        "description": "Retorna dados estruturados de produção vitivinícola para um ano específico, obtidos diretamente do site da Embrapa ou de arquivos locais de backup",
+        "operationId": "getProducao",
+        "parameters": [
+          {
+            "name": "ano",
+            "in": "query",
+            "description": "Ano da produção (1970-2023)",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "minimum": 1970,
+              "maximum": 2023,
+              "default": 2023
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Dados de produção encontrados",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Producao"
+                },
+                "examples": {
+                  "exemplo": {
+                    "value": {
+                      "ano": 2023,
+                      "dados": [
+                        {
+                          "produto": "VINHO DE MESA",
+                          "quantidade": 169762429,
+                          "subprodutos": [
+                            {"produto": "Tinto", "quantidade": 139320884},
+                            {"produto": "Branco", "quantidade": 27910299}
+                          ]
+                        }
+                      ],
+                      "total": 457792870
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ano inválido fornecido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "erro": {
+                      "type": "string",
+                      "example": "Ano deve estar entre 1970 e 2023"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Dados indisponíveis",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "erro": {
+                      "type": "string",
+                      "example": "Dados não disponíveis e backup não encontrado"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Producao": {
+        "type": "object",
+        "properties": {
+          "ano": {
+            "type": "integer",
+            "description": "Ano de referência dos dados",
+            "example": 2023
+          },
+          "dados": {
+            "type": "array",
+            "description": "Lista de categorias de produtos",
+            "items": {
+              "$ref": "#/components/schemas/CategoriaProduto"
+            }
+          },
+          "total": {
+            "type": "integer",
+            "description": "Total de litros produzidos no ano",
+            "example": 457792870
+          }
+        }
+      },
+      "CategoriaProduto": {
+        "type": "object",
+        "properties": {
+          "produto": {
+            "type": "string",
+            "description": "Nome da categoria principal",
+            "example": "VINHO DE MESA"
+          },
+          "quantidade": {
+            "type": "integer",
+            "description": "Quantidade em litros",
+            "example": 169762429
+          },
+          "subprodutos": {
+            "type": "array",
+            "description": "Lista de subprodutos",
+            "items": {
+              "$ref": "#/components/schemas/Subproduto"
+            }
+          }
+        }
+      },
+      "Subproduto": {
+        "type": "object",
+        "properties": {
+          "produto": {
+            "type": "string",
+            "description": "Nome do subproduto",
+            "example": "Tinto"
+          },
+          "quantidade": {
+            "type": "integer",
+            "description": "Quantidade em litros",
+            "example": 139320884
+          }
+        }
+      }
+    }
+  }
+}
