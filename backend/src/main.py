@@ -22,7 +22,8 @@ logging.basicConfig(
     ]
 )
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='../static', static_url_path='/static')
+
 CORS(app)  # Libera CORS para todas as rotas e origens
 
 BACKUP_DIR = 'backup'
@@ -53,10 +54,9 @@ swaggerui_blueprint = get_swaggerui_blueprint(
 )
 app.register_blueprint(swaggerui_blueprint, url_prefix=SWAGGER_URL)
 
-@app.route('/static/swagger.json')
-def swagger():
-    with io.open('static/swagger.json', 'r', encoding='utf-8') as f:
-        return jsonify(json.load(f))
+@app.route('/')
+def index():
+    return jsonify({"message": "Bem-vindo à API Vitivinicultura Embrapa! Acesse /api/docs para a documentação."}) 
 
 def parse_quantity(value):
     """Converte valores numéricos com formatação para inteiros"""
@@ -233,37 +233,44 @@ def get_production():
 
     # 2. Tenta banco de dados
     if db_data := get_from_database(year):
-        redis_client.setex(cache_key, 3600, json.dumps(db_data, default=convert_decimal))  # 1 hora
-        return jsonify(db_data)
+        try:
+            db_data_json = json.dumps(db_data, default=str) # Usar default=str para decimais
+            redis_client.setex(cache_key, 3600, db_data_json)
+            return jsonify(db_data) # Flask pode lidar com Decimal se configurado, mas jsonify pode falhar
+        except TypeError:
+             # Fallback ou log de erro
+             return jsonify(json.loads(json.dumps(db_data, default=str))) # Re-serializa
 
     # 3. Fallback para scraping
     try:
         scraped_data = scrape_production(year)
         if scraped_data:
-            # Salvamento do JSON
             backup_path = os.path.join(BACKUP_DIR, f'producao_{year}.json')
             try:
                 with open(backup_path, 'w', encoding='utf-8') as f:
                     json.dump(scraped_data, f, ensure_ascii=False, indent=2)
-                print(f"✅ Backup salvo em: {backup_path}")
+                logging.info(f"Backup salvo em: {backup_path}")
             except Exception as e:
-                print(f"❌ Erro ao salvar JSON: {str(e)}")
-
-            # Persistência no Banco
+                logging.error(f"Erro ao salvar JSON: {str(e)}")
             try:
                 if save_to_database(scraped_data):
-                    print("✅ Dados salvos no PostgreSQL")
-                    redis_client.setex(cache_key, 3600, json.dumps(scraped_data))
-                    return jsonify(scraped_data)
+                    logging.info("Dados salvos no PostgreSQL")
+                    # Precisa definir a função convert_decimal ou usar json.dumps com default=str
+                    try:
+                       scraped_data_json = json.dumps(scraped_data, default=str)
+                       redis_client.setex(cache_key, 3600, scraped_data_json)
+                       return jsonify(scraped_data)
+                    except TypeError:
+                        return jsonify(json.loads(json.dumps(scraped_data, default=str)))
                 else:
-                    print("❌ Falha ao salvar no PostgreSQL")
+                    logging.warning("Falha ao salvar no PostgreSQL")
             except Exception as e:
-                print(f"❌ Erro crítico no PostgreSQL: {str(e)}")
-                
+                logging.error(f"Erro crítico no PostgreSQL: {str(e)}")
+                # Retornar o dado raspado mesmo se falhar no DB?
+                return jsonify(scraped_data) # Ou retornar erro?
     except Exception as e:
-        print(f"❌ Erro no scraping: {str(e)}")
+        logging.error(f"Erro no scraping: {str(e)}")
 
-    # 4. Fallback final para CSV
     backup_data = load_backup(year)
     if backup_data:
         return jsonify(backup_data)
@@ -280,4 +287,4 @@ def create_tables():
 
 if __name__ == '__main__':
     create_tables()
-    app.run(debug=True, host='0.0.0.0')
+    app.run(debug=True, host='0.0.0.0',  port=5000)
