@@ -4,19 +4,18 @@
 databases:
   # Banco de Dados PostgreSQL Gerenciado pelo Render
   - name: embrapa-db
-    databaseName: vitivinicultura # Nome do banco de dados
-    user: embrapa_user # Nome de usuário (Render pode adicionar sufixo )
-    # plan: free # <-- REMOVIDA - Você selecionará o plano no dashboard do Render
-    # A variável DATABASE_URL será injetada automaticamente nos serviços conectados
+    databaseName: vitivinicultura
+    user: embrapa_user
+    # Você selecionará o plano no dashboard do Render
 
-redis:
-  # Cache Redis Gerenciado pelo Render
-  - name: embrapa-cache
+services:
+  # Serviço 1: Cache Redis Gerenciado pelo Render
+  - type: redis # <<< CORRIGIDO: Definido como um serviço
+    name: embrapa-cache
     plan: free # Plano free para Redis geralmente funciona bem no YAML
     # A variável REDIS_URL será injetada automaticamente nos serviços conectados
 
-services:
-  # Serviço 1: API Backend (Flask/Gunicorn)
+  # Serviço 2: API Backend (Flask/Gunicorn )
   - type: web
     name: embrapa-api
     runtime: docker
@@ -29,16 +28,19 @@ services:
         value: src.main:app
       - key: FLASK_ENV
         value: production
+      # Conexão com o Banco de Dados Gerenciado
       - key: DATABASE_URL
         fromDatabase:
           name: embrapa-db
           property: connectionString
+      # Conexão com o Cache Redis Gerenciado
       - key: REDIS_URL
-        fromRedis:
+        fromService: # <<< CORRIGIDO: Usa fromService
+          type: redis # <<< CORRIGIDO: Especifica o tipo redis
           name: embrapa-cache
           property: connectionString
 
-  # Serviço 2: Frontend (Next.js )
+  # Serviço 3: Frontend (Next.js )
   - type: web
     name: embrapa-frontend
     runtime: docker
@@ -47,6 +49,7 @@ services:
     dockerfilePath: ./frontend/Dockerfile
     dockerContext: ./frontend
     envVars:
+      # Conecta o Frontend à URL interna da API no Render
       - key: NEXT_PUBLIC_API_URL
         fromService:
           type: web
