@@ -1,4 +1,4 @@
-# render.yaml - Blueprint para Deploy no Render
+# render.yaml - Blueprint para Deploy no Render (Planos Gratuitos)
 # Documentação: https://render.com/docs/blueprint-spec
 
 databases:
@@ -6,13 +6,17 @@ databases:
   - name: embrapa-db
     databaseName: vitivinicultura
     user: embrapa_user
-    # Você selecionará o plano no dashboard do Render
+    plan: free
 
 services:
-  # Serviço 1: API Backend (Flask/Gunicorn )
-  # O serviço Redis será criado manualmente no dashboard
+  # Serviço 1: Cache Redis Gerenciado pelo Render
+  # IMPORTANTE: Crie este serviço manualmente no dashboard do Render
+  # selecionando o plano "Free" e adicione a REDIS_URL na API depois.
+
+  # Serviço 2: API Backend (Flask/Gunicorn)
   - type: web
     name: embrapa-api
+    plan: free # Especifica o plano gratuito para o serviço web
     runtime: docker
     repo: https://github.com/gustavoimbelloni/projeto-embrapa # Render preenche automaticamente
     branch: master # Ou main, ajuste conforme sua branch principal
@@ -31,9 +35,10 @@ services:
       # A variável REDIS_URL precisará ser adicionada manualmente no dashboard
       # após criar o serviço Redis manualmente, apontando para a connectionString dele.
 
-  # Serviço 2: Frontend (Next.js )
+  # Serviço 3: Frontend (Next.js)
   - type: web
     name: embrapa-frontend
+    plan: free # Especifica o plano gratuito para o serviço web
     runtime: docker
     repo: https://github.com/gustavoimbelloni/projeto-embrapa # Render preenche automaticamente
     branch: master # Ou main, ajuste conforme sua branch principal
@@ -41,3 +46,4 @@ services:
     dockerContext: ./frontend
     # A variável NEXT_PUBLIC_API_URL precisará ser adicionada manualmente
     # no dashboard após a API ter sua URL pública.
+
