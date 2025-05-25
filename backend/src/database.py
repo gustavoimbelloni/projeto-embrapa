@@ -1,5 +1,5 @@
 from sqlalchemy.exc import SQLAlchemyError
-from models import db, Producao
+from .models import db, Producao
 
 def save_to_database(data):
     """Salva dados raspados no PostgreSQL com commit/rollback explícito"""
