@@ -1,23 +1,34 @@
-# Etapa de build
-FROM node:20-alpine AS builder
-
+# Etapa 1: Instalação de dependências
+FROM node:20-alpine AS deps
 WORKDIR /app
+COPY package.json package-lock.json* ./
+RUN npm ci
 
-COPY package*.json ./
-RUN npm install
-
+# Etapa 2: Build da aplicação
+FROM node:20-alpine AS builder
+WORKDIR /app
+COPY --from=deps /app/node_modules ./node_modules
 COPY . .
+# A variável NEXT_PUBLIC_API_URL será fornecida pelo Render em tempo de execução
 RUN npm run build
 
-# Etapa final - só roda o build gerado
-FROM node:20-alpine
-
+# Etapa 3: Produção (Standalone)
+FROM node:20-alpine AS runner
 WORKDIR /app
 
-COPY --from=builder /app/package.json ./package.json
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/.next ./.next
+ENV NODE_ENV=production
+
+# Copia os artefatos da build standalone
 COPY --from=builder /app/public ./public
+COPY --from=builder --chown=node:node /app/.next/standalone ./
+COPY --from=builder --chown=node:node /app/.next/static ./.next/static
+
+# Define usuário não-root (boa prática)
+USER node
 
 EXPOSE 3000
-CMD ["npm", "start"]
+
+ENV PORT=3000
+
+# Inicia o servidor Node.js otimizado
+CMD ["node", "server.js"]
