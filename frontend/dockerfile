@@ -28,7 +28,7 @@ USER node
 
 EXPOSE 3000
 
-ENV PORT=3000
+#ENV PORT=3000
 
 # Inicia o servidor Node.js otimizado
 CMD ["node", "server.js"]
