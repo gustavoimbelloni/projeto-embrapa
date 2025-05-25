@@ -10,10 +10,9 @@ databases:
 
 services:
   # Serviço 1: Cache Redis Gerenciado pelo Render
-  - type: redis # <<< CORRIGIDO: Definido como um serviço
+  - type: redis
     name: embrapa-cache
-    plan: free # Plano free para Redis geralmente funciona bem no YAML
-    # A variável REDIS_URL será injetada automaticamente nos serviços conectados
+    # plan: free # <-- REMOVIDA - Você selecionará o plano no dashboard do Render
 
   # Serviço 2: API Backend (Flask/Gunicorn )
   - type: web
@@ -28,15 +27,13 @@ services:
         value: src.main:app
       - key: FLASK_ENV
         value: production
-      # Conexão com o Banco de Dados Gerenciado
       - key: DATABASE_URL
         fromDatabase:
           name: embrapa-db
           property: connectionString
-      # Conexão com o Cache Redis Gerenciado
       - key: REDIS_URL
-        fromService: # <<< CORRIGIDO: Usa fromService
-          type: redis # <<< CORRIGIDO: Especifica o tipo redis
+        fromService:
+          type: redis
           name: embrapa-cache
           property: connectionString
 
@@ -54,4 +51,5 @@ services:
         fromService:
           type: web
           name: embrapa-api
-          property: url
+          # property: url # <-- REMOVIDA TEMPORARIAMENTE para teste
+          # Se a remoção não funcionar, podemos precisar definir manualmente após o deploy
