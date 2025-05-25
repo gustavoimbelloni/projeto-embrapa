@@ -5,14 +5,14 @@ databases:
   # Banco de Dados PostgreSQL Gerenciado pelo Render
   - name: embrapa-db
     databaseName: vitivinicultura # Nome do banco de dados
-    user: embrapa_user # Nome de usuário (Render pode adicionar sufixo)
-    plan: free # Escolha o plano (free tem limitações e pode dormir)
+    user: embrapa_user # Nome de usuário (Render pode adicionar sufixo )
+    # plan: free # <-- REMOVIDA - Você selecionará o plano no dashboard do Render
     # A variável DATABASE_URL será injetada automaticamente nos serviços conectados
 
 redis:
   # Cache Redis Gerenciado pelo Render
   - name: embrapa-cache
-    plan: free # Escolha o plano (free tem limitações e pode dormir)
+    plan: free # Plano free para Redis geralmente funciona bem no YAML
     # A variável REDIS_URL será injetada automaticamente nos serviços conectados
 
 services:
@@ -24,28 +24,21 @@ services:
     branch: master # Ou main, ajuste conforme sua branch principal
     dockerfilePath: ./backend/Dockerfile
     dockerContext: ./backend
-    # Mapeamento de porta interno do Gunicorn para o Render
-    # Não precisa de `ports` aqui, Render gerencia isso.
     envVars:
-      - key: FLASK_APP # Flask precisa saber onde está a app
+      - key: FLASK_APP
         value: src.main:app
       - key: FLASK_ENV
-        value: production # Ambiente de produção
-      # Conexão com o Banco de Dados Gerenciado
+        value: production
       - key: DATABASE_URL
         fromDatabase:
           name: embrapa-db
           property: connectionString
-      # Conexão com o Cache Redis Gerenciado
       - key: REDIS_URL
         fromRedis:
           name: embrapa-cache
           property: connectionString
-      # Outras variáveis que sua API possa precisar
-      # - key: SUA_VARIAVEL_API
-      #   value: seu_valor
 
-  # Serviço 2: Frontend (Next.js)
+  # Serviço 2: Frontend (Next.js )
   - type: web
     name: embrapa-frontend
     runtime: docker
@@ -53,15 +46,9 @@ services:
     branch: master # Ou main, ajuste conforme sua branch principal
     dockerfilePath: ./frontend/Dockerfile
     dockerContext: ./frontend
-    # Mapeamento de porta interno do Next.js para o Render
-    # Não precisa de `ports` aqui, Render gerencia isso.
     envVars:
-      # Conecta o Frontend à URL interna da API no Render
       - key: NEXT_PUBLIC_API_URL
         fromService:
           type: web
-          name: embrapa-api # Nome do serviço da API definido acima
-          property: url # Render fornece a URL interna automaticamente
-      # Outras variáveis que seu Frontend possa precisar
-      # - key: NEXT_PUBLIC_SUA_VARIAVEL_FRONT
-      #   value: seu_valor
+          name: embrapa-api
+          property: url
