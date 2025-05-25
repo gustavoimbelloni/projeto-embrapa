@@ -10,7 +10,7 @@ import json
 import os
 import io
 from bs4 import BeautifulSoup
-from models import db, Producao  # Novo
+from .models import db, Producao  # Novo
 from database import save_to_database, get_from_database  # Novo
 import logging
 logging.basicConfig(
