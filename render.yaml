@@ -9,12 +9,8 @@ databases:
     # Você selecionará o plano no dashboard do Render
 
 services:
-  # Serviço 1: Cache Redis Gerenciado pelo Render
-  - type: redis
-    name: embrapa-cache
-    # plan: free # <-- REMOVIDA - Você selecionará o plano no dashboard do Render
-
-  # Serviço 2: API Backend (Flask/Gunicorn )
+  # Serviço 1: API Backend (Flask/Gunicorn )
+  # O serviço Redis será criado manualmente no dashboard
   - type: web
     name: embrapa-api
     runtime: docker
@@ -27,17 +23,15 @@ services:
         value: src.main:app
       - key: FLASK_ENV
         value: production
+      # Conexão com o Banco de Dados Gerenciado
       - key: DATABASE_URL
         fromDatabase:
           name: embrapa-db
           property: connectionString
-      - key: REDIS_URL
-        fromService:
-          type: redis
-          name: embrapa-cache
-          property: connectionString
+      # A variável REDIS_URL precisará ser adicionada manualmente no dashboard
+      # após criar o serviço Redis manualmente, apontando para a connectionString dele.
 
-  # Serviço 3: Frontend (Next.js )
+  # Serviço 2: Frontend (Next.js )
   - type: web
     name: embrapa-frontend
     runtime: docker
@@ -45,11 +39,5 @@ services:
     branch: master # Ou main, ajuste conforme sua branch principal
     dockerfilePath: ./frontend/Dockerfile
     dockerContext: ./frontend
-    envVars:
-      # Conecta o Frontend à URL interna da API no Render
-      - key: NEXT_PUBLIC_API_URL
-        fromService:
-          type: web
-          name: embrapa-api
-          # property: url # <-- REMOVIDA TEMPORARIAMENTE para teste
-          # Se a remoção não funcionar, podemos precisar definir manualmente após o deploy
+    # A variável NEXT_PUBLIC_API_URL precisará ser adicionada manualmente
+    # no dashboard após a API ter sua URL pública.
