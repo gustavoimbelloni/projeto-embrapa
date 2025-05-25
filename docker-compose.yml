@@ -3,17 +3,17 @@ version: "3.8"
 services:
   api:
     build:
-      context: ./embrapa-api
+      context: ./backend
     ports:
       - "5000:5000"
     volumes:
-      - ./embrapa-api:/app
+      - ./backend:/app
       - ./backup:/app/backup  # ✅ necessário se você acessa arquivos CSV no código
     environment:
       - POSTGRES_USER=user
       - POSTGRES_PASSWORD=password
       - POSTGRES_DB=vitivinicultura
-      - FLASK_APP=main.py
+      - FLASK_APP=src/main.py
       - FLASK_ENV=development
       - REDIS_HOST=embrapa-cache  # ✅ adicionando Redis
       - REDIS_PORT=6379
@@ -40,9 +40,12 @@ services:
 
   frontend:
     build:
-      context: ./minha-aplicacao
+      context: ./frontend
     ports:
       - "3001:3000"
+    environment:
+      # Define a URL da API para o ambiente Docker
+      - NEXT_PUBLIC_API_URL=http://api:5000
     depends_on:
       - api
 

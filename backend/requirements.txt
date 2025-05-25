@@ -13,3 +13,5 @@ SQLAlchemy==2.0.30
 Werkzeug>=2.0
 flask-cors
 python-dotenv
+streamlit 
+pandas
